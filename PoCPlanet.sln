@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoCPlanet", "PoCPlanet\PoCPlanet.csproj", "{5A2975F2-B1F9-4888-A35F-08A17B92A627}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoCPlanet.Tests", "PoCPlanet.Tests\PoCPlanet.Tests.csproj", "{44004872-5180-441C-BF7E-8D40FE6F7C45}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A2975F2-B1F9-4888-A35F-08A17B92A627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A2975F2-B1F9-4888-A35F-08A17B92A627}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A2975F2-B1F9-4888-A35F-08A17B92A627}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A2975F2-B1F9-4888-A35F-08A17B92A627}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44004872-5180-441C-BF7E-8D40FE6F7C45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44004872-5180-441C-BF7E-8D40FE6F7C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44004872-5180-441C-BF7E-8D40FE6F7C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44004872-5180-441C-BF7E-8D40FE6F7C45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
