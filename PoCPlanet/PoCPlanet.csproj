@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Bencodex" Version="0.4.0" />
       <PackageReference Include="Libplanet" Version="0.39.0-nightly.20220620" />
     </ItemGroup>
 

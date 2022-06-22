@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 
 namespace PoCPlanet.Tests;
 
-public class Tests
+public class HashcashTest
 {
     [SetUp]
     public void Setup()
