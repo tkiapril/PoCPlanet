@@ -22,17 +22,6 @@ public record Transaction(
     private static readonly byte[] ActionsKey = { Convert.ToByte('A') };
     private static readonly byte[] TimestampKey = { Convert.ToByte('t') };
 
-    public Transaction(Transaction tx, Signature sig) : this(
-        Sender: tx.Sender,
-        PublicKey: tx.PublicKey,
-        Signature: sig,
-        Recipient: tx.Recipient,
-        Actions: tx.Actions,
-        Timestamp: tx.Timestamp
-    )
-    {
-    }
-
     public static Transaction Make(PrivateKey privateKey, Address recipient, List<IAction> actions, DateTime timestamp)
     {
         var publicKey = privateKey.PublicKey;
@@ -44,7 +33,7 @@ public record Transaction(
             Timestamp: timestamp,
             Signature: new Signature(Array.Empty<byte>())
         );
-        return new Transaction(tx: tx, sig: new Signature(privateKey.Sign(tx.Bencode(sign: false))));
+        return tx with { Signature = new Signature(privateKey.Sign(tx.Bencode(sign: false))) };
     }
 
     public TxId Id
