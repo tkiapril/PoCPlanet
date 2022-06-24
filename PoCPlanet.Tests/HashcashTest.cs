@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using static NUnit.Framework.Assert;
 
 namespace PoCPlanet.Tests;
 
@@ -12,9 +13,9 @@ public class HashcashTest
     [Test]
     public void Answer()
     {
-        Random rnd = new Random();
+        var rnd = new Random();
         var sha256 = SHA256.Create();
-        Byte[] challenge = new byte[40];
+        var challenge = new byte[40];
         int[] bits = { 4, 8, 12, 16 };
         for (var i = 0; i < 3; i++)
         {
@@ -24,7 +25,7 @@ public class HashcashTest
                 byte[] Stamp(Nonce nonce) => challenge.Concat(nonce).ToArray();
                 var answer = Hashcash.Answer(Stamp, j);
                 var digest = new Hash(sha256.ComputeHash(Stamp(answer)));
-                Assert.IsTrue(Hashcash.HasLeadingZeroBits(digest, j));
+                That(Hashcash.HasLeadingZeroBits(digest, j));
             }
         }
     }
@@ -32,16 +33,19 @@ public class HashcashTest
     [Test]
     public void HasLeadingZeroBits()
     {
-        Assert.IsTrue(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0x80, 0x61, 0x62, 0x63 }), 0));
-        Assert.IsFalse(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0x80, 0x61, 0x62, 0x63 }), 1));
-        for (int i = 0; i < 9; i++)
+        Assert.Multiple(() =>
         {
-            Assert.IsTrue(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x80 }), 1));
-        }
-        Assert.IsFalse(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x80 }), 9));
-        Assert.IsTrue(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x7f }), 9));
-        Assert.IsFalse(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x7f }), 10));
-        Assert.IsTrue(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x3f }), 10));
-        Assert.IsFalse(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0 }), 9));
+            That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0x80, 0x61, 0x62, 0x63 }), 0));
+            That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0x80, 0x61, 0x62, 0x63 }), 1), Is.False);
+            for (var i = 0; i < 9; i++)
+            {
+                That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x80 }), 1));
+            }
+            That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x80 }), 9), Is.False);
+            That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x7f }), 9));
+            That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x7f }), 10), Is.False);
+            That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0, 0x3f }), 10));
+            That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0 }), 9), Is.False);
+        });
     }
 }

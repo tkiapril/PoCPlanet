@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
 using Bencodex.Types;
 using Libplanet.Crypto;
 
@@ -18,7 +17,7 @@ public record TransferAction(
     public static readonly byte[] RecipientKey = { Convert.ToByte('r') };
     public static readonly byte[] AmountKey = { Convert.ToByte('a') };
 
-    public ImmutableHashSet<Address> RequestStates(Address from, Address to) => ImmutableHashSet.Create<Address>(to);
+    public ImmutableHashSet<Address> RequestStates(Address from, Address to) => ImmutableHashSet.Create(to);
 
     public Dictionary<Address, Dictionary> Execute(Address from, Address to, Dictionary<Address, Dictionary> states)
     {

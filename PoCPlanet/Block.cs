@@ -3,7 +3,6 @@ using Bencodex;
 using Bencodex.Types;
 
 namespace PoCPlanet;
-using Libplanet.Crypto;
 
 [Serializable()]
 public record Block(
