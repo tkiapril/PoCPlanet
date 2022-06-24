@@ -3,7 +3,7 @@ using Bencodex.Types;
 
 namespace PoCPlanet;
 
-public interface IAction
+public interface IAction : IEquatable<IAction>
 {
     public static string ActionTypeId => throw new NotImplementedException();
     public static IAction Deserialize(Dictionary data) => throw new NotImplementedException();

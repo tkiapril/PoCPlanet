@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using Bencodex.Types;
 using Libplanet.Crypto;
 
@@ -34,16 +35,31 @@ public record TransferAction(
 
     public Dictionary Serialize() =>
         Dictionary.Empty
-            .Add(PublicKeyKey, PublicKey.ToImmutableArray(true))
+            .Add(PublicKeyKey, PublicKey.ToImmutableArray(false))
             .Add(RecipientKey, Recipient)
             .Add(AmountKey, Amount);
 
-    public static IAction Deserialize(Dictionary data)
+    public static TransferAction Deserialize(Dictionary data)
     {
         return new TransferAction(
             PublicKey: new PublicKey(data.GetValue<Binary>(PublicKeyKey).ToByteArray()),
             Recipient: new Address(data.GetValue<Binary>(RecipientKey)),
             Amount: data.GetValue<Integer>(AmountKey)
         );
+    }
+
+    public virtual bool Equals(IAction? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return other is TransferAction action &&
+               PublicKey.Equals(action.PublicKey) &&
+               Recipient.Equals(action.Recipient) &&
+               Amount == action.Amount;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(PublicKey, Recipient, Amount);
     }
 }
