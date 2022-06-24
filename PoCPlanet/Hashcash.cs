@@ -31,7 +31,7 @@ public static class Hashcash
         var trailingBits = bits % 8;
         for (var i = 0; i < leadingBytes; i++)
         {
-            if (digest.Data[i] != Convert.ToByte(0))
+            if (digest[i] != Convert.ToByte(0))
             {
                 return false;
             }
@@ -39,13 +39,13 @@ public static class Hashcash
 
         if (trailingBits > 0)
         {
-            if (digest.Data.Length <= leadingBytes)
+            if (digest.Length <= leadingBytes)
             {
                 return false;
             }
 
             var mask = (byte)(0xff << (8 - trailingBits) & 0xff);
-            return (mask & digest.Data[leadingBytes]) == 0x0;
+            return (mask & digest[leadingBytes]) == 0x0;
         }
 
         return true;
@@ -54,6 +54,6 @@ public static class Hashcash
 
 public delegate byte[] Stamp(Nonce nonce);
 
-public record Nonce(byte[] Data);
+public record Nonce(byte[] Bytes) : ImmutableBytes(Bytes);
 
-public record Hash(byte[] Data);
+public record Hash(byte[] Bytes) : ImmutableBytes(Bytes);

@@ -50,7 +50,7 @@ public record Transaction(
         bool verified = false;
         try
         {
-            verified = PublicKey.Verify(message: Bencode(sign: false), signature: Signature.Data);
+            verified = PublicKey.Verify(message: Bencode(sign: false), signature: Signature);
         }
         catch (ArgumentNullException)
         {
@@ -58,14 +58,14 @@ public record Transaction(
 
         if (!verified)
         {
-            throw new Exception(message: $"The signature {Convert.ToHexString(Signature.Data)} failed to verify.");
+            throw new Exception(message: $"The signature {Signature} failed to verify.");
         }
 
-        if (!new Address(PublicKey).Data.SequenceEqual(Sender.Data))
+        if (new Address(PublicKey) != Sender)
         {
             throw new Exception(
                 message: $"The public key {Convert.ToHexString(PublicKey.Format(compress: false))} "
-                         + $"does not match the address {Convert.ToHexString(Sender.Data)}"
+                         + $"does not match the address {Sender}"
                 );
         }
     }
@@ -73,15 +73,15 @@ public record Transaction(
     public Dictionary Serialize(bool sign)
     {
         Dictionary dict = Dictionary.Empty
-            .Add(SenderKey, Sender.Data)
+            .Add(SenderKey, Sender)
             .Add(PublicKeyKey, PublicKey.ToImmutableArray(compress: true))
-            .Add(RecipientKey, Recipient.Data)
+            .Add(RecipientKey, Recipient)
             .Add(ActionsKey, from action in Actions select action.Serialize())
             .Add(TimestampKey, Timestamp.ToRfc3339());
 
         if (sign)
         {
-            dict = dict.Add(SignatureKey, Signature.Data);
+            dict = dict.Add(SignatureKey, Signature);
         }
 
         return dict;
@@ -90,6 +90,9 @@ public record Transaction(
     public byte[] Bencode(bool sign) => new Codec().Encode(Serialize(sign: sign));
 }
 
-public record TxId(byte[] Data);
+public record TxId(byte[] Bytes) : ImmutableBytes(Bytes);
 
-public record Signature(byte[] Data);
+public record Signature(byte[] Bytes) : ImmutableBytes(Bytes), IFormattable
+{
+    public string ToString(string? format, IFormatProvider? formatProvider) => Convert.ToHexString(this);
+}

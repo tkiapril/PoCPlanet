@@ -59,20 +59,20 @@ public record Block(
         Dictionary dict = Dictionary.Empty
             .Add(IndexKey, Index)
             .Add(TimestampKey, Timestamp.ToRfc3339())
-            .Add(NonceKey, Nonce.Data);
+            .Add(NonceKey, Nonce);
         dict = RewardBeneficiary is not null
-            ? dict.Add(RewardBeneficiaryKey, RewardBeneficiary.Data)
+            ? dict.Add(RewardBeneficiaryKey, RewardBeneficiary)
             : dict.Add(RewardBeneficiaryKey, Null.Value);
 
         dict = dict.Add(DifficultyKey, Difficulty);
 
         dict = PreviousHash is not null
-            ? dict.Add(PreviousHashKey, PreviousHash.Data)
+            ? dict.Add(PreviousHashKey, PreviousHash)
             : dict.Add(PreviousHashKey, Null.Value);
 
         if (hash)
         {
-            dict = dict.Add(HashKey, Hash.Data);
+            dict = dict.Add(HashKey, Hash);
         }
 
         if (transactionData)
@@ -83,7 +83,7 @@ public record Block(
         {
             dict = dict.Add(
                 TransactionsKey,
-                (IEnumerable<IValue>)(from tx in Transactions select tx.Id.Data)
+                (IEnumerable<IValue>)(from tx in Transactions select tx.Id)
                 .Aggregate(List.Empty, (current, id) => current.Add(id))
                 );
         }

@@ -21,7 +21,7 @@ public record TransferAction(
 
     public Dictionary<Address, Dictionary> Execute(Address from, Address to, Dictionary<Address, Dictionary> states)
     {
-        if (!new Address(PublicKey).Data.SequenceEqual(from.Data))
+        if (new Address(PublicKey) != from)
         {
             throw new Exception("The public key does not match the transaction sender");
         }
@@ -35,7 +35,7 @@ public record TransferAction(
     public Dictionary Serialize() =>
         Dictionary.Empty
             .Add(PublicKeyKey, PublicKey.ToImmutableArray(true))
-            .Add(RecipientKey, Recipient.Data)
+            .Add(RecipientKey, Recipient)
             .Add(AmountKey, Amount);
 
     public static IAction Deserialize(Dictionary data)

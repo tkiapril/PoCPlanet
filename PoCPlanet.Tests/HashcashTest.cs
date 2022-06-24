@@ -21,7 +21,7 @@ public class HashcashTest
             rnd.NextBytes(challenge);
             foreach (var j in bits)
             {
-                byte[] Stamp(Nonce nonce) => challenge.Concat(nonce.Data).ToArray();
+                byte[] Stamp(Nonce nonce) => challenge.Concat(nonce).ToArray();
                 var answer = Hashcash.Answer(Stamp, j);
                 var digest = new Hash(sha256.ComputeHash(Stamp(answer)));
                 Assert.IsTrue(Hashcash.HasLeadingZeroBits(digest, j));
