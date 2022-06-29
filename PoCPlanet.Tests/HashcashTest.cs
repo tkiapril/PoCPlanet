@@ -10,25 +10,21 @@ public class HashcashTest
     {
     }
 
-    [Test]
-    public void Answer()
+    [Test, TestCaseSource(nameof(AnswerSource))]
+    public void Answer(byte[] challenge, int bits)
     {
-        var rnd = new Random();
-        var sha256 = SHA256.Create();
-        var challenge = new byte[40];
-        int[] bits = { 4, 8, 12, 16 };
-        for (var i = 0; i < 3; i++)
-        {
-            rnd.NextBytes(challenge);
-            foreach (var j in bits)
-            {
-                byte[] Stamp(Nonce nonce) => challenge.Concat(nonce).ToArray();
-                var answer = Hashcash.Answer(Stamp, j);
-                var digest = new Hash(sha256.ComputeHash(Stamp(answer)));
-                That(Hashcash.HasLeadingZeroBits(digest, j));
-            }
-        }
+        byte[] Stamp(Nonce nonce) => challenge.Concat(nonce).ToArray();
+        var answer = Hashcash.Answer(Stamp, bits);
+        var digest = new Hash(SHA256.Create().ComputeHash(Stamp(answer)));
+        That(Hashcash.HasLeadingZeroBits(digest, bits));
     }
+
+    public static IEnumerable<TestCaseData> AnswerSource() =>
+        from challenge in
+                from _ in Enumerable.Range(0, 5) select TestUtils.RandomBytes(40)
+            from bits in
+                from i in Enumerable.Range(1, 4) select i * 4
+            select new TestCaseData(challenge, bits);
 
     [Test]
     public void HasLeadingZeroBits()
