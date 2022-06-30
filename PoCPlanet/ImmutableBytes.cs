@@ -13,7 +13,9 @@ public record ImmutableBytes(byte[] Bytes) : IReadOnlyList<byte>
 
     public IEnumerator<byte> GetEnumerator() => Bytes.OfType<byte>().GetEnumerator();
 
-    public override int GetHashCode() => Bytes.GetHashCode();
+    public override int GetHashCode() =>
+        Bytes.Length == 0 ? 0 : Bytes.Aggregate(17, (current, b) => current * 31 + b.GetHashCode());
+
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public int Count => Length;
