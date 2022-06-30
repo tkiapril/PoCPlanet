@@ -12,7 +12,7 @@ public record Block(
     Address? RewardBeneficiary,
     Hash? PreviousHash,
     DateTime Timestamp,
-    List<Transaction> Transactions
+    IEnumerable<Transaction> Transactions
 )
 {
     private static readonly byte[] IndexKey = { Convert.ToByte('i') };
@@ -30,7 +30,7 @@ public record Block(
         Address? rewardBeneficiary,
         Hash? previousHash,
         DateTime timestamp,
-        List<Transaction> transactions
+        IEnumerable<Transaction> transactions
         )
     {
         Block MakeBlock(Nonce nonce)
