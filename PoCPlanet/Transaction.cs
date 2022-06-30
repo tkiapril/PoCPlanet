@@ -47,7 +47,7 @@ public record Transaction(
 
     public void Validate()
     {
-        bool verified = false;
+        var verified = false;
         try
         {
             verified = PublicKey.Verify(message: Bencode(sign: false), signature: Signature);

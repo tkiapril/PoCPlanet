@@ -55,7 +55,7 @@ public record Block(
 
     public Dictionary Serialize(bool hash, bool transactionData)
     {
-        Dictionary dict = Dictionary.Empty
+        var dict = Dictionary.Empty
             .Add(IndexKey, Index)
             .Add(TimestampKey, Timestamp.ToRfc3339())
             .Add(NonceKey, Nonce);

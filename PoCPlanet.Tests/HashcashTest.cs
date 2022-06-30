@@ -29,7 +29,7 @@ public class HashcashTest
     [Test]
     public void HasLeadingZeroBits()
     {
-        Assert.Multiple(() =>
+        Multiple(() =>
         {
             That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0x80, 0x61, 0x62, 0x63 }), 0));
             That(Hashcash.HasLeadingZeroBits(new Hash(new byte[] { 0x80, 0x61, 0x62, 0x63 }), 1), Is.False);
