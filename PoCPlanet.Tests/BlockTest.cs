@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text;
 using static NUnit.Framework.Assert;
 
@@ -20,7 +21,7 @@ public class BlockTest
             rewardBeneficiary: null,
             previousHash: null,
             timestamp: dt,
-            transactions: new List<Transaction>()
+            transactions: ImmutableArray<Transaction>.Empty
             );
         Assert.Multiple(() =>
         {
