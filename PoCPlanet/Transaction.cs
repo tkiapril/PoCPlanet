@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Security.Cryptography;
 using Bencodex;
 using Bencodex.Types;
@@ -11,7 +12,7 @@ public record Transaction(
     PublicKey PublicKey,
     Signature Signature,
     Address Recipient,
-    List<IAction> Actions,
+    IReadOnlyList<IAction> Actions,
     DateTime Timestamp
 )
 {
@@ -22,7 +23,7 @@ public record Transaction(
     private static readonly byte[] ActionsKey = { Convert.ToByte('A') };
     private static readonly byte[] TimestampKey = { Convert.ToByte('t') };
 
-    public static Transaction Make(PrivateKey privateKey, Address recipient, List<IAction> actions, DateTime timestamp)
+    public static Transaction Make(PrivateKey privateKey, Address recipient, IReadOnlyList<IAction> actions, DateTime timestamp)
     {
         var publicKey = privateKey.PublicKey;
         var tx = new Transaction(
