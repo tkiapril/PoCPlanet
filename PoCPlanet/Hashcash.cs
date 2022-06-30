@@ -54,6 +54,6 @@ public static class Hashcash
 
 public delegate byte[] Stamp(Nonce nonce);
 
-public record Nonce(byte[] Bytes) : ImmutableBytes(Bytes);
+public record Nonce(byte[] Bytes) : ImmutableHexBytes(Bytes);
 
-public record Hash(byte[] Bytes) : ImmutableBytes(Bytes);
+public record Hash(byte[] Bytes) : ImmutableHexBytes(Bytes);

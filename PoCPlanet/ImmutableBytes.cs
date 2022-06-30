@@ -20,3 +20,8 @@ public record ImmutableBytes(byte[] Bytes) : IReadOnlyList<byte>
 
     public int Count => Length;
 }
+
+public record ImmutableHexBytes(byte[] Bytes) : ImmutableBytes(Bytes), IFormattable
+{
+    public string ToString(string? format, IFormatProvider? formatProvider) => Convert.ToHexString(this);
+}

@@ -90,9 +90,6 @@ public record Transaction(
     public byte[] Bencode(bool sign) => new Codec().Encode(Serialize(sign: sign));
 }
 
-public record TxId(byte[] Bytes) : ImmutableBytes(Bytes);
+public record TxId(byte[] Bytes) : ImmutableHexBytes(Bytes);
 
-public record Signature(byte[] Bytes) : ImmutableBytes(Bytes), IFormattable
-{
-    public string ToString(string? format, IFormatProvider? formatProvider) => Convert.ToHexString(this);
-}
+public record Signature(byte[] Bytes) : ImmutableHexBytes(Bytes);
