@@ -47,7 +47,7 @@ public record Block(
         }
 
         var nonce = Hashcash.Answer(
-            (nonce) => MakeBlock(nonce).Bencode(hash: false, transactionData: false),
+            (nonce) => MakeBlock(nonce).Bencode(hash: false, transactionData: true),
             difficulty
             );
         return MakeBlock(nonce);
