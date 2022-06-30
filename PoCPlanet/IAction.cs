@@ -19,6 +19,13 @@ public interface IAction : IEquatable<IAction>
         );
 }
 
+public class ActionError : ArgumentException
+{
+    public ActionError(string? message) : base(message)
+    {
+    }
+}
+
 public static class StateUtil
 {
     public static string ToString(ImmutableDictionary<Address, Dictionary> state) =>

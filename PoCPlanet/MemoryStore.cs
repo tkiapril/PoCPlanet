@@ -52,7 +52,7 @@ public class MemoryStore : IStore
         {
             if (!_txs.ContainsKey(txId))
             {
-                throw new Exception($"tx {txId} not in txs");
+                throw new Exception();
             }
 
             _stagedTxs = _stagedTxs.Remove(txId).Add(txId);

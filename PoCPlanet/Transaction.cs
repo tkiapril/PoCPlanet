@@ -58,12 +58,12 @@ public record Transaction(
 
         if (!verified)
         {
-            throw new Exception(message: $"The signature {Signature} failed to verify.");
+            throw new TransactionSignatureError(message: $"The signature {Signature} failed to verify.");
         }
 
         if (new Address(PublicKey) != Sender)
         {
-            throw new Exception(
+            throw new TransactionSignatureError(
                 message: $"The public key {Convert.ToHexString(PublicKey.Format(compress: false))} "
                          + $"does not match the address {Sender}"
                 );
@@ -88,6 +88,30 @@ public record Transaction(
     }
 
     public byte[] Bencode(bool sign) => new Codec().Encode(Serialize(sign: sign));
+}
+
+public class TransactionError : ArgumentException {
+    public TransactionError(string? message) : base(message)
+    {
+    }
+}
+
+public class TransactionIdError : TransactionError {
+    public TransactionIdError(string? message) : base(message)
+    {
+    }
+}
+
+public class TransactionSignatureError : TransactionError {
+    public TransactionSignatureError(string? message) : base(message)
+    {
+    }
+}
+
+public class TransactionPublicKeyError : TransactionError {
+    public TransactionPublicKeyError(string? message) : base(message)
+    {
+    }
 }
 
 public record TxId(byte[] Bytes) : ImmutableHexBytes(Bytes);

@@ -100,27 +100,27 @@ public record Block(
         switch (Index)
         {
             case < 0:
-                throw new Exception($"Index must be 0 or above, but the index is {Index}");
+                throw new BlockIndexError($"Index must be 0 or above, but the index is {Index}");
             case < 1 when Difficulty != 0:
-                throw new Exception(
+                throw new BlockDifficultyError(
                     $"Difficulty must be 0 for the genesis block but the difficulty is {Difficulty}"
                 );
             case < 1 when PreviousHash is not null:
-                throw new Exception("Previous hash must be empty for the genesis block");
+                throw new BlockPreviousHashError("Previous hash must be empty for the genesis block");
             case < 1:
                 break;
             default:
             {
                 if (Difficulty < 1)
                 {
-                    throw new Exception(
+                    throw new BlockDifficultyError(
                         $"Difficulty must be above 0 except the genesis block but the difficulty is {Difficulty}"
                     );
                 }
 
                 if (PreviousHash is null)
                 {
-                    throw new Exception("Previous hash must be present except for the genesis block");
+                    throw new BlockPreviousHashError("Previous hash must be present except for the genesis block");
                 }
 
                 break;
@@ -129,11 +129,60 @@ public record Block(
 
         if (!Hashcash.HasLeadingZeroBits(Hash, Difficulty))
         {
-            throw new Exception(
+            throw new BlockNonceError(
                 $"Hash {Hash} with the nonce {Nonce} does not satisfy the difficulty level {Difficulty}"
                 );
         }
     }
 
     public string ToString(string? format, IFormatProvider? formatProvider) => Hash.ToString();
+}
+
+public class BlockError : ArgumentException
+{
+    public BlockError(string? message) : base(message)
+    {
+    }
+}
+
+public class BlockHashError : BlockError
+{
+    public BlockHashError(string? message) : base(message)
+    {
+    }
+}
+
+public class BlockIndexError : BlockError
+{
+    public BlockIndexError(string? message) : base(message)
+    {
+    }
+}
+
+public class BlockDifficultyError : BlockError
+{
+    public BlockDifficultyError(string? message) : base(message)
+    {
+    }
+}
+
+public class BlockPreviousHashError : BlockError
+{
+    public BlockPreviousHashError(string? message) : base(message)
+    {
+    }
+}
+
+public class BlockNonceError : BlockError
+{
+    public BlockNonceError(string? message) : base(message)
+    {
+    }
+}
+
+public class BlockTimestampError : BlockError
+{
+    public BlockTimestampError(string? message) : base(message)
+    {
+    }
 }

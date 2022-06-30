@@ -27,7 +27,7 @@ public record TransferAction(
     {
         if (new Address(PublicKey) != from)
         {
-            throw new Exception("The public key does not match the transaction sender");
+            throw new ActionError("The public key does not match the transaction sender");
         }
 
         var balanceExists = states.TryGetValue(to, out var balanceState);

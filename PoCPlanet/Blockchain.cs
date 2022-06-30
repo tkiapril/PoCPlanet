@@ -191,12 +191,12 @@ public class Blockchain : IReadOnlyList<Block>
 
             if (x.block.Index != x.i)
             {
-                throw new Exception($"the expected block index is {x.i} but its index is {x.block.Index}");
+                throw new BlockIndexError($"the expected block index is {x.i} but its index is {x.block.Index}");
             }
 
             if (x.block.Difficulty < x.difficulty)
             {
-                throw new Exception(
+                throw new BlockDifficultyError(
                     $"the expected difficulty of the block #{x.i} is {x.difficulty}, "
                     + "but its difficulty is {x.block.Difficulty}"
                     );
@@ -206,13 +206,13 @@ public class Blockchain : IReadOnlyList<Block>
             {
                 if (prevHash is null)
                 {
-                    throw new Exception("the genesis block must not have a previous block");
+                    throw new BlockPreviousHashError("the genesis block must not have a previous block");
                 }
 
                 var actualPrevHash = 
                     x.block.PreviousHash is not null ? x.block.PreviousHash.ToString() : "nothing";
 
-                throw new Exception(
+                throw new BlockPreviousHashError(
                     $"the block #{x.i} is not continuous from the block #{x.i - 1}; "
                     + $"while the previous block's hash is {prevHash}, "
                     + $"the block #{x.i}'s pointer to the previous hash refers to {actualPrevHash}"
@@ -221,7 +221,7 @@ public class Blockchain : IReadOnlyList<Block>
 
             if (now < x.block.Timestamp)
             {
-                throw new Exception(
+                throw new BlockTimestampError(
                     $"the block #{x.i}'s timestamp ({x.block.Timestamp}) is later "
                     + $"than now ({now})"
                 );
@@ -229,7 +229,7 @@ public class Blockchain : IReadOnlyList<Block>
 
             if (prevTimestamp is not null && x.block.Timestamp <= prevTimestamp)
             {
-                throw new Exception(
+                throw new BlockTimestampError(
                     $"the block #{x.i}'s timestamp ({x.block.Timestamp}) is"
                     + $"earlier than the block #{x.i - 1}'s ({prevTimestamp})"
                 );
@@ -318,7 +318,7 @@ public class BlockSet : IDictionary<Hash, Block>
     {
         if (value.Hash != key)
         {
-            throw new Exception($"{value}.hash does not match {key}");
+            throw new BlockHashError($"{value}.hash does not match {key}");
         }
         value.Validate();
         _store.PutBlock(value);
@@ -432,7 +432,7 @@ public class TransactionSet : IDictionary<TxId, Transaction>
     {
         if (value.Id != key)
         {
-            throw new Exception($"{value}.Id does not match {key}");
+            throw new TransactionIdError($"{value}.Id does not match {key}");
         }
         value.Validate();
         _store.PutTransaction(value);
