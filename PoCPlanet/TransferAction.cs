@@ -19,7 +19,11 @@ public record TransferAction(
 
     public ImmutableHashSet<Address> RequestStates(Address from, Address to) => ImmutableHashSet.Create(to);
 
-    public Dictionary<Address, Dictionary> Execute(Address from, Address to, Dictionary<Address, Dictionary> states)
+    public ImmutableDictionary<Address, Dictionary> Execute(
+        Address from,
+        Address to,
+        ImmutableDictionary<Address, Dictionary> states
+        )
     {
         if (new Address(PublicKey) != from)
         {
@@ -29,7 +33,7 @@ public record TransferAction(
         var balanceExists = states.TryGetValue(to, out var balanceState);
         var balance = balanceExists ? Balance.Deserialize(balanceState!) : new Balance(0, PublicKey);
         var newBalance = balance with { BalanceValue = balance.BalanceValue + Amount };
-        return new Dictionary<Address, Dictionary> {[to] = newBalance.Serialize()};
+        return ImmutableDictionary<Address, Dictionary>.Empty.Add(to, newBalance.Serialize());
     }
 
     public Dictionary Serialize() =>

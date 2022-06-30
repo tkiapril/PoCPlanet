@@ -12,9 +12,15 @@ public interface IAction : IEquatable<IAction>
     public ImmutableHashSet<Address> RequestStates(Address from, Address to) =>
         ImmutableHashSet.Create(from, to);
 
-    public Dictionary<Address, Dictionary> Execute(
+    public ImmutableDictionary<Address, Dictionary> Execute(
         Address from,
         Address to,
-        Dictionary<Address, Dictionary> states
+        ImmutableDictionary<Address, Dictionary> states
         );
+}
+
+public static class StateUtil
+{
+    public static string ToString(ImmutableDictionary<Address, Dictionary> state) =>
+        string.Join(Environment.NewLine, state);
 }
