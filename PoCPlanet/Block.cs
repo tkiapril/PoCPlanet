@@ -15,14 +15,14 @@ public record Block(
     IEnumerable<Transaction> Transactions
 )
 {
-    private static readonly byte[] IndexKey = { Convert.ToByte('i') };
-    private static readonly byte[] DifficultyKey = { Convert.ToByte('d') };
-    private static readonly byte[] TimestampKey = { Convert.ToByte('t') };
-    private static readonly byte[] TransactionsKey = { Convert.ToByte('T') };
-    private static readonly byte[] NonceKey = { Convert.ToByte('n') };
-    private static readonly byte[] RewardBeneficiaryKey = { Convert.ToByte('r') };
-    private static readonly byte[] PreviousHashKey = { Convert.ToByte('p') };
-    private static readonly byte[] HashKey = { Convert.ToByte('h') };
+    public static readonly byte[] IndexKey = { Convert.ToByte('i') };
+    public static readonly byte[] DifficultyKey = { Convert.ToByte('d') };
+    public static readonly byte[] TimestampKey = { Convert.ToByte('t') };
+    public static readonly byte[] TransactionsKey = { Convert.ToByte('T') };
+    public static readonly byte[] NonceKey = { Convert.ToByte('n') };
+    public static readonly byte[] RewardBeneficiaryKey = { Convert.ToByte('r') };
+    public static readonly byte[] PreviousHashKey = { Convert.ToByte('p') };
+    public static readonly byte[] HashKey = { Convert.ToByte('h') };
 
     public static Block Mine(
         int index,

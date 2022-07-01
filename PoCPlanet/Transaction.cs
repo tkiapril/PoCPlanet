@@ -15,12 +15,12 @@ public record Transaction(
     DateTime Timestamp
 )
 {
-    private static readonly byte[] SenderKey = { Convert.ToByte('s') };
-    private static readonly byte[] PublicKeyKey = { Convert.ToByte('P') };
-    private static readonly byte[] SignatureKey = { Convert.ToByte('S') };
-    private static readonly byte[] RecipientKey = { Convert.ToByte('r') };
-    private static readonly byte[] ActionsKey = { Convert.ToByte('A') };
-    private static readonly byte[] TimestampKey = { Convert.ToByte('t') };
+    public static readonly byte[] SenderKey = { Convert.ToByte('s') };
+    public static readonly byte[] PublicKeyKey = { Convert.ToByte('P') };
+    public static readonly byte[] SignatureKey = { Convert.ToByte('S') };
+    public static readonly byte[] RecipientKey = { Convert.ToByte('r') };
+    public static readonly byte[] ActionsKey = { Convert.ToByte('A') };
+    public static readonly byte[] TimestampKey = { Convert.ToByte('t') };
 
     public static Transaction Make(PrivateKey privateKey, Address recipient, IReadOnlyList<IAction> actions, DateTime timestamp)
     {
