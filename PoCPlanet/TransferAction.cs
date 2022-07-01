@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Numerics;
+using System.Reflection;
 using Bencodex.Types;
 using Libplanet.Crypto;
 
@@ -41,12 +42,24 @@ public record TransferAction(
 
     public Dictionary Serialize() =>
         Dictionary.Empty
-            .Add(PublicKeyKey, PublicKey.ToImmutableArray(false))
-            .Add(RecipientKey, Recipient)
-            .Add(AmountKey, Amount.ToByteArray());
+            .Add(IAction.ActionTypeIdKey, ActionTypeId)
+            .Add(IAction.ValuesKey, Dictionary.Empty
+                .Add(PublicKeyKey, PublicKey.ToImmutableArray(false))
+                .Add(RecipientKey, Recipient)
+                .Add(AmountKey, Amount.ToByteArray())
+            );
 
     public static TransferAction Deserialize(Dictionary data)
     {
+        if (data.GetValue<Text>(IAction.ActionTypeIdKey) != ActionTypeId)
+        {
+            throw new ArgumentException(
+                $"Input data does not match the type {MethodBase.GetCurrentMethod()!.DeclaringType}"
+                );
+        }
+
+        data = data.GetValue<Dictionary>(IAction.ValuesKey);
+
         return new TransferAction(
             PublicKey: new PublicKey(data.GetValue<Binary>(PublicKeyKey).ToByteArray()),
             Recipient: new Address(data.GetValue<Binary>(RecipientKey)),
