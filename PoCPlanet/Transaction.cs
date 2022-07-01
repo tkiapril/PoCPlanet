@@ -123,8 +123,10 @@ public record Transaction(
         return HashCode.Combine(Sender, PublicKey, Signature, Recipient, Actions, Timestamp);
     }
 
-    public override string ToString() => Convert.ToHexString(Id).ToLower();
-    public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
+    public override string ToString() =>
+        Convert.ToHexString(Id).ToLower();
+    public string ToString(string? format, IFormatProvider? formatProvider) =>
+        Convert.ToHexString(Id).ToLower();
 }
 
 public class TransactionError : ArgumentException {

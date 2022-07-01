@@ -22,5 +22,6 @@ public record Address(byte[] Bytes) : ImmutableBytes(Bytes), IFormattable
     public override string ToString() =>
         $"0x{Convert.ToHexString(this).ToLower()}";
 
-    public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
+    public string ToString(string? format, IFormatProvider? formatProvider) =>
+        $"0x{Convert.ToHexString(this).ToLower()}";
 }
