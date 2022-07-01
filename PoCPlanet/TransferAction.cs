@@ -33,8 +33,9 @@ public record TransferAction(
             throw new ActionError("The public key does not match the transaction sender");
         }
 
-        var fromBalance = states[from].Keys.Any() ? Balance.Deserialize(states[from]) : new Balance(0, PublicKey);
-        var toBalance = states[to].Keys.Any() ? Balance.Deserialize(states[to]) : new Balance(0, PublicKey);
+        var fromBalance =
+            states[from].Keys.Any() ? Balance.Deserialize(states[from]) : new Balance(0, new Address(PublicKey));
+        var toBalance = states[to].Keys.Any() ? Balance.Deserialize(states[to]) : new Balance(0, Recipient);
         return ImmutableDictionary<Address, Dictionary>.Empty
             .Add(from, fromBalance.Decrement(Amount).Serialize())
             .Add(to, toBalance.Increment(Amount).Serialize());

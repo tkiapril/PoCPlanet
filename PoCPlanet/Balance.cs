@@ -7,22 +7,22 @@ namespace PoCPlanet;
 [Serializable()]
 public record Balance(
     BigInteger BalanceValue,
-    PublicKey PublicKey
+    Address Address
     ): IState
 {
-    public static readonly byte[] PublicKeyKey = { Convert.ToByte('p') };
+    public static readonly byte[] AddressKey = { Convert.ToByte('a') };
     public static readonly byte[] BalanceValueKey = { Convert.ToByte('b') };
 
     public static Balance Deserialize(Dictionary data) => 
         new (
             BalanceValue: new BigInteger(data.GetValue<Binary>(BalanceValueKey).ToByteArray()),
-            PublicKey: new PublicKey(data.GetValue<Binary>(PublicKeyKey).ByteArray)
+            Address: new Address(data.GetValue<Binary>(AddressKey).ToByteArray())
             );
 
     public Dictionary Serialize() =>
         Dictionary.Empty
             .Add(BalanceValueKey, BalanceValue.ToByteArray())
-            .Add(PublicKeyKey, PublicKey.ToImmutableArray(compress: true));
+            .Add(AddressKey, Address);
 
     public Balance Increment(BigInteger amount) => this with { BalanceValue = BalanceValue + amount };
 
