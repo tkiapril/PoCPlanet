@@ -25,10 +25,10 @@ public interface IAction : IEquatable<IAction>
             }
             catch (TargetInvocationException e)
             {
-                throw e.InnerException!;
-            }
-            catch (ArgumentException)
-            {
+                if (e.InnerException is not ArgumentException)
+                {
+                    throw e.InnerException!;
+                }
             }
         }
 
