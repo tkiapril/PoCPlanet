@@ -74,7 +74,7 @@ public class Blockchain : IReadOnlyList<Block>
                 states[a.Key] = a.Value;
             }
 
-            if (states.Keys.OrderBy(t => t).SequenceEqual(addresses.OrderBy(t => t)))
+            if (states.Keys.ToImmutableHashSet().Equals(addresses.ToImmutableHashSet()))
             {
                 break;
             }
@@ -130,7 +130,10 @@ public class Blockchain : IReadOnlyList<Block>
                 states = newStates;
                 var requestedStates = 
                     from addr in request
-                    select new KeyValuePair<Address, Dictionary>(addr, states[addr]);
+                    select new KeyValuePair<Address, Dictionary>(
+                        addr,
+                        states.ContainsKey(addr) ? states[addr] : Dictionary.Empty
+                        );
                 var stateChanges = x.action.Execute(
                     tx.Sender,
                     tx.Recipient,
@@ -191,7 +194,9 @@ public class Blockchain : IReadOnlyList<Block>
 
             if (x.block.Index != x.i)
             {
-                throw new BlockIndexError($"the expected block index is {x.i} but its index is {x.block.Index}");
+                throw new BlockIndexError(
+                    $"the expected block index is {x.i} but its index is {x.block.Index}"
+                    );
             }
 
             if (x.block.Difficulty < x.difficulty)
