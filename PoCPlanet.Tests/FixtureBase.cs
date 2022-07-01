@@ -12,7 +12,7 @@ public class FixtureBase
         RewardBeneficiary: null,
         PreviousHash: null,
         Timestamp: new DateTime(2018, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-        Transactions: new Transaction[] {}
+        Transactions: ImmutableArray<Transaction>.Empty
         );
 
     protected static readonly PrivateKey PrivateKey = new PrivateKey(

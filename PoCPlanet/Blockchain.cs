@@ -46,7 +46,10 @@ public class Blockchain : IReadOnlyList<Block>
         }
     }
 
-    public ImmutableDictionary<Address, Dictionary> GetStates(IReadOnlyCollection<Address> addresses, Hash? offset)
+    public ImmutableDictionary<Address, Dictionary> GetStates(
+        IReadOnlyCollection<Address> addresses,
+        Hash? offset = null
+        )
     {
         if (offset is null)
         {
