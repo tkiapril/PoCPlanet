@@ -122,31 +122,41 @@ public class Blockchain : IReadOnlyList<Block>
         Debug.WriteLine($"{block.Hash.ToString()[..5]}: {StateUtil.ToString(states)}");
         foreach (var tx in block.Transactions)
         {
-            foreach(var x in tx.Actions.Select((action, i) => (i, action)))
+            var transactionStateChanges = ImmutableDictionary<Address, Dictionary>.Empty;
+            try
             {
-                var request = x.action.RequestStates(tx.Sender, tx.Recipient);
-                var newStates =
-                    GetStates(request.Except(states.Keys), offset: prevHash);
-                states.ToList().ForEach(
-                    kv => newStates = newStates.Remove(kv.Key).Add(kv.Key, kv.Value)
+                foreach (var x in tx.Actions.Select((action, i) => (i, action)))
+                {
+                    var request = x.action.RequestStates(tx.Sender, tx.Recipient);
+                    var newStates =
+                        GetStates(request.Except(states.Keys), offset: prevHash);
+                    states.ToList().ForEach(
+                        kv => newStates = newStates.Remove(kv.Key).Add(kv.Key, kv.Value)
                     );
-                states = newStates;
-                var requestedStates = 
-                    from addr in request
-                    select new KeyValuePair<Address, Dictionary>(
-                        addr,
-                        states.ContainsKey(addr) ? states[addr] : Dictionary.Empty
+                    states = newStates;
+                    var requestedStates =
+                        from addr in request
+                        select new KeyValuePair<Address, Dictionary>(
+                            addr,
+                            states.ContainsKey(addr) ? states[addr] : Dictionary.Empty
                         );
-                var stateChanges = x.action.Execute(
-                    tx.Sender,
-                    tx.Recipient,
-                    requestedStates.ToImmutableDictionary()
-                );
-                stateChanges.ToList().ForEach(
-                    kv => states = states.Remove(kv.Key).Add(kv.Key, kv.Value)
+                    var stateChanges = x.action.Execute(
+                        tx.Sender,
+                        tx.Recipient,
+                        requestedStates.ToImmutableDictionary()
                     );
-                Debug.WriteLine($"{block.Hash.ToString()[..5]}.{tx.Id.ToString()}#{x.i}: {states}");
+
+                    transactionStateChanges = transactionStateChanges.Concat(stateChanges).ToImmutableDictionary();
+                    Debug.WriteLine($"{block.Hash.ToString()[..5]}.{tx.Id.ToString()}#{x.i}: {states}");
+                }
             }
+            catch (StateTransitionError)
+            {
+                continue;;
+            }
+            transactionStateChanges.ToList().ForEach(
+                kv => states = states.Remove(kv.Key).Add(kv.Key, kv.Value)
+            );
         }
         _store.SetBlockStates(block.Hash, states);
     }

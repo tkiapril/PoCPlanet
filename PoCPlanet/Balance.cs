@@ -37,7 +37,7 @@ public record Balance(
     }
 }
 
-public class BalanceError : ArgumentException
+public class BalanceError : StateTransitionError
 {
     public BalanceError(string? message) : base(message)
     {
