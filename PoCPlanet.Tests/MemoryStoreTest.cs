@@ -15,7 +15,7 @@ public class MemoryStoreTest : FixtureBase
     public void StoreBlock()
     {
         var store = new MemoryStore();
-        var blockchain = Blockchain();
+        var blockchain = Blockchain;
         var a = blockchain[0];
         var b = blockchain[1];
         var c = blockchain[2];
