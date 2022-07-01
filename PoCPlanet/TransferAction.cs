@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Numerics;
 using Bencodex.Types;
 using Libplanet.Crypto;
 
@@ -8,7 +9,7 @@ namespace PoCPlanet;
 public record TransferAction(
         PublicKey PublicKey,
         Address Recipient,
-        int Amount
+        BigInteger Amount
         ) : IAction
 {
     public static string ActionTypeId => "transfer";
@@ -17,7 +18,8 @@ public record TransferAction(
     public static readonly byte[] RecipientKey = { Convert.ToByte('r') };
     public static readonly byte[] AmountKey = { Convert.ToByte('a') };
 
-    public ImmutableHashSet<Address> RequestStates(Address from, Address to) => ImmutableHashSet.Create(to);
+    public ImmutableHashSet<Address> RequestStates(Address from, Address to) =>
+        ImmutableHashSet.Create(from, to);
 
     public ImmutableDictionary<Address, Dictionary> Execute(
         Address from,
@@ -30,24 +32,25 @@ public record TransferAction(
             throw new ActionError("The public key does not match the transaction sender");
         }
 
-        var balanceExists = states.TryGetValue(to, out var balanceState);
-        var balance = balanceExists ? Balance.Deserialize(balanceState!) : new Balance(0, PublicKey);
-        var newBalance = balance with { BalanceValue = balance.BalanceValue + Amount };
-        return ImmutableDictionary<Address, Dictionary>.Empty.Add(to, newBalance.Serialize());
+        var fromBalance = states[from].Keys.Any() ? Balance.Deserialize(states[from]) : new Balance(0, PublicKey);
+        var toBalance = states[to].Keys.Any() ? Balance.Deserialize(states[to]) : new Balance(0, PublicKey);
+        return ImmutableDictionary<Address, Dictionary>.Empty
+            .Add(from, fromBalance.Decrement(Amount).Serialize())
+            .Add(to, toBalance.Increment(Amount).Serialize());
     }
 
     public Dictionary Serialize() =>
         Dictionary.Empty
             .Add(PublicKeyKey, PublicKey.ToImmutableArray(false))
             .Add(RecipientKey, Recipient)
-            .Add(AmountKey, Amount);
+            .Add(AmountKey, Amount.ToByteArray());
 
     public static TransferAction Deserialize(Dictionary data)
     {
         return new TransferAction(
             PublicKey: new PublicKey(data.GetValue<Binary>(PublicKeyKey).ToByteArray()),
             Recipient: new Address(data.GetValue<Binary>(RecipientKey)),
-            Amount: data.GetValue<Integer>(AmountKey)
+            Amount: new BigInteger(data.GetValue<Binary>(AmountKey))
         );
     }
 
