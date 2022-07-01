@@ -63,7 +63,7 @@ public record Transaction(
 
         if (new Address(PublicKey) != Sender)
         {
-            throw new TransactionSignatureError(
+            throw new TransactionPublicKeyError(
                 message: $"The public key {Convert.ToHexString(PublicKey.Format(compress: false))} "
                          + $"does not match the address {Sender}"
                 );
