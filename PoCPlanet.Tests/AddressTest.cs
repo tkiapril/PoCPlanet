@@ -19,6 +19,6 @@ public class AddressTest : FixtureBase
     public new void ToString()
     {
         const string expected = "0x3208a70eb98a8e3d0dda312fb4abd93e61596df3";
-        That(expected, Is.EqualTo(Address.ToString()));
+        That(Address.ToString(), Is.EqualTo(expected));
     }
 }
