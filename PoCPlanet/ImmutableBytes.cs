@@ -23,5 +23,6 @@ public record ImmutableBytes(byte[] Bytes) : IReadOnlyList<byte>
 
 public record ImmutableHexBytes(byte[] Bytes) : ImmutableBytes(Bytes), IFormattable
 {
-    public string ToString(string? format, IFormatProvider? formatProvider) => Convert.ToHexString(this);
+    public override string ToString() => Convert.ToHexString(this);
+    public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
 }

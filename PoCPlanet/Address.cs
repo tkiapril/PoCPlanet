@@ -19,6 +19,8 @@ public record Address(byte[] Bytes) : ImmutableBytes(Bytes), IFormattable
         return new Address(output.Skip(output.Length - 20).ToArray());
     }
 
-    public string ToString(string? format, IFormatProvider? formatProvider) =>
-        $"0x{Convert.ToHexString(this)}";
+    public override string ToString() =>
+        $"0x{Convert.ToHexString(this).ToLower()}";
+
+    public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
 }
