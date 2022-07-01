@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Security.Cryptography;
 using Bencodex;
 using Bencodex.Types;
@@ -13,7 +14,7 @@ public record Transaction(
     Address Recipient,
     IReadOnlyList<IAction> Actions,
     DateTime Timestamp
-)
+) : IFormattable
 {
     public static readonly byte[] SenderKey = { Convert.ToByte('s') };
     public static readonly byte[] PublicKeyKey = { Convert.ToByte('P') };
@@ -87,7 +88,43 @@ public record Transaction(
         return dict;
     }
 
+    public static Transaction Deserialize(Dictionary data)
+    {
+        var actions = (from a in data.GetValue<List>(Transaction.ActionsKey)
+            select IAction.Deserialize((Dictionary)a)).ToImmutableArray();
+        var tx = new Transaction(
+            Sender: new Address(data.GetValue<Binary>(SenderKey)),
+            PublicKey: new PublicKey(data.GetValue<Binary>(PublicKeyKey).ByteArray),
+            Signature: new Signature(data.GetValue<Binary>(SignatureKey)),
+            Recipient: new Address(data.GetValue<Binary>(RecipientKey)),
+            Actions: actions,
+            Timestamp: DateTimeExtensions.Rfc3339ToDateTime(data.GetValue<Text>(TimestampKey))
+        );
+        tx.Validate();
+        return tx;
+    }
+
     public byte[] Bencode(bool sign) => new Codec().Encode(Serialize(sign: sign));
+
+    public virtual bool Equals(Transaction? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Sender.Equals(other.Sender)
+               && PublicKey.Equals(other.PublicKey)
+               && Signature.Equals(other.Signature)
+               && Recipient.Equals(other.Recipient)
+               && Actions.SequenceEqual(other.Actions)
+               && Timestamp.Equals(other.Timestamp);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Sender, PublicKey, Signature, Recipient, Actions, Timestamp);
+    }
+
+    public override string ToString() => Convert.ToHexString(Id).ToLower();
+    public string ToString(string? format, IFormatProvider? formatProvider) => ToString();
 }
 
 public class TransactionError : ArgumentException {
