@@ -152,7 +152,7 @@ public class Blockchain : IReadOnlyList<Block>
             }
             catch (StateTransitionError)
             {
-                continue;;
+                continue;
             }
             transactionStateChanges.ToList().ForEach(
                 kv => states = states.Remove(kv.Key).Add(kv.Key, kv.Value)

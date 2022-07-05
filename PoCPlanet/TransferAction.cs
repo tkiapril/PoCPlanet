@@ -35,7 +35,9 @@ public record TransferAction(
 
         var fromBalance =
             states[from].Keys.Any() ? Balance.Deserialize(states[from]) : new Balance(0, new Address(PublicKey));
-        var toBalance = states[to].Keys.Any() ? Balance.Deserialize(states[to]) : new Balance(0, Recipient);
+        var toBalance = states.ContainsKey(to) ? 
+            states[to].Keys.Any() ? Balance.Deserialize(states[to]) : new Balance(0, Recipient) :
+            new Balance(0, Recipient);
         return ImmutableDictionary<Address, Dictionary>.Empty
             .Add(from, fromBalance.Decrement(Amount).Serialize())
             .Add(to, toBalance.Increment(Amount).Serialize());
